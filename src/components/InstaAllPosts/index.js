@@ -1,10 +1,6 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import Slider from 'react-slick'
 import Loader from 'react-loader-spinner'
-
-import Header from '../Header'
-import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
 
 import './index.css'
@@ -16,8 +12,8 @@ const apiStatusConstraints = {
   inprogress: 'IN_PROGRESS',
 }
 
-class Home extends Component {
-  state = {storiesList: [], apiStatus: apiStatusConstraints.initial}
+class InstaAllPosts extends Component {
+  state = {postsList: [], apiStatus: apiStatusConstraints.initial}
 
   componentDidMount() {
     this.getUserStories()
@@ -25,7 +21,7 @@ class Home extends Component {
 
   getUserStories = async () => {
     this.setState({apiStatus: apiStatusConstraints.inprogress})
-    const url = `https://apis.ccbp.in/insta-share/stories`
+    const url = `https://apis.ccbp.in/insta-share/posts`
     const jwtToken = Cookies.get('jwt_token')
     const options = {
       method: 'GET',
@@ -38,45 +34,37 @@ class Home extends Component {
 
     if (response.ok === true) {
       const data = await response.json()
-      const updatedData = data.users_stories.map(each => ({
-        storyUrl: each.story_url,
-        userId: each.user_id,
-        username: each.user_name,
+      const updatedData = data.posts.map(eachPost => ({
+        createdAt: eachPost.created_at,
+        comments: eachPost.comments.map(eachComment => ({
+          comment: eachComment.comment,
+          userId: eachComment.user_id,
+          username: eachComment.user_name,
+        })),
+        postId: eachPost.post_id,
+        profilePic: eachPost.profile_pic,
+        userId: eachPost.user_id,
+        username: eachPost.user_name,
+        postDetails: {
+          caption: eachPost.post_details.caption,
+          imageUrl: eachPost.post_details.image_url,
+        },
       }))
-      this.setState({
-        storiesList: updatedData,
-        apiStatus: apiStatusConstraints.success,
-      })
+      this.setState({postsList: updatedData})
     } else {
       this.setState({apiStatus: apiStatusConstraints.failure})
     }
   }
 
   onRenderSuccessPageStories = () => {
-    const settings = {
-      speed: 500,
-      slidesToShow: 7,
-      slidesToScroll: 1,
-      responsive: [
-        {
-          breakpoint: 480,
-          settings: {
-            slidesToShow: 4,
-            slidesToScroll: 1,
-          },
-        },
-      ],
-    }
-    const {storiesList} = this.state
+    const {postsList} = this.state
 
     return (
-      <div className="all-stories">
-        <Slider {...settings}>
-          {storiesList.map(eachStory => (
-            <StoryItem storyDetails={eachStory} key={eachStory.userId} />
-          ))}
-        </Slider>
-      </div>
+      <ul className="all-posts">
+        {postsList.map(eachStory => (
+          <StoryItem storyDetails={eachStory} key={eachStory.userId} />
+        ))}
+      </ul>
     )
   }
 
@@ -102,14 +90,8 @@ class Home extends Component {
   }
 
   render() {
-    return (
-      <div className="home-container">
-        <Header />
-        {this.onRenderStories()}
-        <InstaAllPosts />
-      </div>
-    )
+    return <div className="home-container">hgghgfhf</div>
   }
 }
 
-export default Home
+export default InstaAllPosts

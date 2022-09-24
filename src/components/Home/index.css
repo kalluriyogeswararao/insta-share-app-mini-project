@@ -1,0 +1,27 @@
+.all-stories {
+  width: 90%;
+  margin: auto;
+  padding: 20px;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  background-color: #dbdbdb;
+}
+
+.home-container {
+  height: 100vh;
+  width: 100vw;
+}
+
+@media screen and (max-width: 576px) {
+  .all-stories {
+    width: 95%;
+    margin: auto;
+  }
+}
+
+.loader-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 30px;
+}
