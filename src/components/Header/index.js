@@ -42,7 +42,7 @@ class Header extends Component {
       >
         Search
       </button>
-      <Link to="/profile">
+      <Link to="/my-profile">
         <button type="button" className="nav-profile-heading">
           Profile
         </button>
@@ -101,7 +101,7 @@ class Header extends Component {
                   Home
                 </button>
               </Link>
-              <Link to="/profile">
+              <Link to="/my-profile">
                 <button type="button" className="nav-profile-heading">
                   Profile
                 </button>
