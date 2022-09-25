@@ -105,8 +105,10 @@ class Home extends Component {
     return (
       <div className="home-container">
         <Header />
-        {this.onRenderStories()}
-        <InstaAllPosts />
+        <div className="stories-posts-container">
+          {this.onRenderStories()}
+          <InstaAllPosts />
+        </div>
       </div>
     )
   }

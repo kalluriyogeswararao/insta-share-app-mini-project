@@ -17,7 +17,7 @@ class Header extends Component {
   }
 
   onClickMenu = () => {
-    this.setState({showDetails: true})
+    this.setState({showDetails: true, showSearch: false})
   }
 
   onClickCloseMenu = () => {

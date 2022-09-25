@@ -1,0 +1,15 @@
+.all-posts {
+  width: 100%;
+}
+
+.posts-container {
+  display: flex;
+  justify-content: center;
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 20vh;
+}

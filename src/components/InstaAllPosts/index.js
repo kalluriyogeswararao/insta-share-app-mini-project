@@ -1,7 +1,7 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
-import StoryItem from '../StoryItem'
+import PostItem from '../PostItem'
 
 import './index.css'
 
@@ -34,6 +34,7 @@ class InstaAllPosts extends Component {
 
     if (response.ok === true) {
       const data = await response.json()
+
       const updatedData = data.posts.map(eachPost => ({
         createdAt: eachPost.created_at,
         comments: eachPost.comments.map(eachComment => ({
@@ -42,15 +43,21 @@ class InstaAllPosts extends Component {
           username: eachComment.user_name,
         })),
         postId: eachPost.post_id,
+        likesCount: eachPost.likes_count,
         profilePic: eachPost.profile_pic,
-        userId: eachPost.user_id,
-        username: eachPost.user_name,
+        userUserId: eachPost.user_id,
+        userUsername: eachPost.user_name,
         postDetails: {
           caption: eachPost.post_details.caption,
           imageUrl: eachPost.post_details.image_url,
         },
       }))
-      this.setState({postsList: updatedData})
+      console.log(updatedData)
+
+      this.setState({
+        postsList: updatedData,
+        apiStatus: apiStatusConstraints.success,
+      })
     } else {
       this.setState({apiStatus: apiStatusConstraints.failure})
     }
@@ -61,8 +68,8 @@ class InstaAllPosts extends Component {
 
     return (
       <ul className="all-posts">
-        {postsList.map(eachStory => (
-          <StoryItem storyDetails={eachStory} key={eachStory.userId} />
+        {postsList.map(eachPost => (
+          <PostItem postDetailsData={eachPost} key={eachPost.postId} />
         ))}
       </ul>
     )
@@ -76,7 +83,7 @@ class InstaAllPosts extends Component {
 
   onRenderFailurePage = () => {}
 
-  onRenderStories = () => {
+  onRenderAllPosts = () => {
     const {apiStatus} = this.state
 
     switch (apiStatus) {
@@ -90,7 +97,7 @@ class InstaAllPosts extends Component {
   }
 
   render() {
-    return <div className="home-container">hgghgfhf</div>
+    return <div className="posts-container">{this.onRenderAllPosts()}</div>
   }
 }
 
