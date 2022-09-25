@@ -52,7 +52,6 @@ class InstaAllPosts extends Component {
           imageUrl: eachPost.post_details.image_url,
         },
       }))
-      console.log(updatedData)
 
       this.setState({
         postsList: updatedData,

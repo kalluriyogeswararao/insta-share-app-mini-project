@@ -22,8 +22,12 @@ class MyProfile extends Component {
   }
 
   getUserStories = async () => {
+    const {match} = this.props
+    const {params} = match
+    const {id} = params
+
     this.setState({apiStatus: apiStatusConstraints.inprogress})
-    const url = `https://apis.ccbp.in/insta-share/my-profile`
+    const url = `https://apis.ccbp.in/insta-share/users/${id}`
     const jwtToken = Cookies.get('jwt_token')
     const options = {
       method: 'GET',
@@ -38,16 +42,16 @@ class MyProfile extends Component {
       const data = await response.json()
 
       const updatedData = {
-        followersCount: data.profile.followers_count,
-        followingCount: data.profile.following_count,
-        id: data.profile.id,
-        postsCount: data.profile.posts_count,
-        profilePic: data.profile.profile_pic,
-        userBio: data.profile.user_bio,
-        userId: data.profile.user_id,
-        username: data.profile.user_name,
-        posts: data.profile.posts,
-        stories: data.profile.stories,
+        followersCount: data.user_details.followers_count,
+        followingCount: data.user_details.following_count,
+        id: data.user_details.id,
+        postsCount: data.user_details.posts_count,
+        profilePic: data.user_details.profile_pic,
+        userBio: data.user_details.user_bio,
+        userId: data.user_details.user_id,
+        username: data.user_details.user_name,
+        posts: data.user_details.posts,
+        stories: data.user_details.stories,
       }
 
       this.setState({
@@ -101,36 +105,40 @@ class MyProfile extends Component {
 
     return (
       <div className="all">
-        <div className="profile-container">
-          <img src={profilePic} alt="my profile" className="my-profile-image" />
-          <div className="profile-details-container">
-            <p className="profile-username">{username}</p>
-            <div className="posts-followers-container">
-              <p className="posts">
-                {postsCount} <span className="span">posts</span>
+        <div className="user-profile-container">
+          <img
+            src={profilePic}
+            alt="my profile"
+            className="user-my-profile-image"
+          />
+          <div className="user-profile-details-container">
+            <p className="user-profile-username">{username}</p>
+            <div className="user-posts-followers-container">
+              <p className="user-posts">
+                {postsCount} <span className="user-span">posts</span>
               </p>
-              <p className="posts">
+              <p className="user-posts">
                 {followersCount} <span className="span">followers</span>
               </p>
-              <p className="posts">
-                {followingCount} <span className="span"> following</span>
+              <p className="user-posts">
+                {followingCount} <span className="user-span"> following</span>
               </p>
             </div>
-            <p className="user-id">{userId}</p>
+            <p className="user-user-id">{userId}</p>
             <p>{userBio}</p>
           </div>
         </div>
-        <ul className="my-profile-stories">
+        <ul className="user-my-profile-stories">
           {stories.map(item => (
-            <li key={item.id} className="story">
-              <img src={item.image} alt="my story" className="image" />
+            <li key={item.id} className="user-story">
+              <img src={item.image} alt="my story" className="user-image" />
             </li>
           ))}
         </ul>
-        <hr className="hr-line" />
-        <div className="grid-icon-container">
-          <BsGrid3X3 className="grid-icon" />
-          <p className="post-heading">Posts</p>
+        <hr className="user-hr-line" />
+        <div className="user-grid-icon-container">
+          <BsGrid3X3 className="user-grid-icon" />
+          <p className="user-post-heading">Posts</p>
         </div>
 
         {this.onRenderAllPosts()}
@@ -139,7 +147,7 @@ class MyProfile extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="my-profile-loader-container">
+    <div className="user-my-profile-loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
@@ -161,9 +169,9 @@ class MyProfile extends Component {
 
   render() {
     return (
-      <div className="home-container">
+      <div className="user-home-container">
         <Header />
-        <div className="posts-container">{this.onRenderStories()}</div>
+        <div className="user-posts-container">{this.onRenderStories()}</div>
       </div>
     )
   }

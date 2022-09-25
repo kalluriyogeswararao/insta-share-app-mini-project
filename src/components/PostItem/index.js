@@ -20,7 +20,7 @@ const PostItem = props => {
 
   return (
     <li className="post-details">
-      <Link to={`/user/${userUserId}`} className="user-details-container">
+      <Link to={`/users/${userUserId}`} className="user-details-container">
         <img
           src={profilePic}
           alt="post author profile"
@@ -46,7 +46,7 @@ const PostItem = props => {
           <p className="like">{likesCount} likes</p>
           <p className="caption">{caption}</p>
           {comments.map(each => (
-            <p className="comment">
+            <p className="comment" key={each.comment}>
               {each.username} <span className="caption">{each.comment}</span>
             </p>
           ))}

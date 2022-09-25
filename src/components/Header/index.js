@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import {BsSearch} from 'react-icons/bs'
 import {IoIosMenu} from 'react-icons/io'
 import {ImCross} from 'react-icons/im'
+import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -61,72 +62,120 @@ class Header extends Component {
   )
 
   onShowSearchBar = () => (
-    <div className="popup-search-container">
-      <input type="search" placeholder="Search" className="search-input" />
-      <button type="button" className="search-btn">
-        <BsSearch className="search-icon" />
-      </button>
-    </div>
+    <SearchContext.Consumer>
+      {value => {
+        const {changeSearchInput, onClickSearchButton, searchInput} = value
+
+        const onChangeInput = event => {
+          changeSearchInput(event.target.value)
+        }
+
+        const onClickSearch = () => {
+          onClickSearchButton()
+        }
+
+        return (
+          <div className="popup-search-container">
+            <input
+              type="search"
+              placeholder="Search"
+              className="search-input"
+              onChange={onChangeInput}
+              value={searchInput}
+            />
+            <button
+              type="button"
+              className="search-btn"
+              onClick={onClickSearch}
+            >
+              <BsSearch className="search-icon" />
+            </button>
+          </div>
+        )
+      }}
+    </SearchContext.Consumer>
   )
 
   render() {
     const {showDetails, showSearch} = this.state
     return (
-      <>
-        <nav className="navbar-container">
-          <div className="header-container">
-            <div className="logo-container">
-              <Link to="/">
-                <img
-                  src="https://res.cloudinary.com/ysdsp/image/upload/v1663996344/logo_wlcmi9.png"
-                  alt="website logo"
-                  className="website-header-logo"
-                />
-              </Link>
-              <h1 className="website-header-title">Insta Share</h1>
-            </div>
-            <div className="details-container">
-              <div className="search-container">
-                <input
-                  type="search"
-                  placeholder="Search"
-                  className="search-input"
-                />
-                <button type="button" className="search-btn">
-                  <BsSearch className="search-icon" />
-                </button>
-              </div>
-              <Link to="/">
-                <button type="button" className="nav-home-heading">
-                  Home
-                </button>
-              </Link>
-              <Link to="/my-profile">
-                <button type="button" className="nav-profile-heading">
-                  Profile
-                </button>
-              </Link>
-              <button
-                type="button"
-                className="logout-btn"
-                onClick={this.onClickLogout}
-              >
-                Logout
-              </button>
-            </div>
-            <button
-              type="button"
-              className="menu-button"
-              onClick={this.onClickMenu}
-            >
-              <IoIosMenu className="menu-icon" />
-            </button>
-          </div>
-        </nav>
+      <SearchContext.Consumer>
+        {value => {
+          const {searchInput, changeSearchInput, onClickSearchButton} = value
 
-        {showDetails && this.onRenderNavDetails()}
-        {showSearch && this.onShowSearchBar()}
-      </>
+          const onChangeInput = event => {
+            changeSearchInput(event.target.value)
+          }
+
+          const onClickSearch = () => {
+            onClickSearchButton()
+          }
+
+          return (
+            <>
+              <nav className="navbar-container">
+                <div className="header-container">
+                  <div className="logo-container">
+                    <Link to="/">
+                      <img
+                        src="https://res.cloudinary.com/ysdsp/image/upload/v1663996344/logo_wlcmi9.png"
+                        alt="website logo"
+                        className="website-header-logo"
+                      />
+                    </Link>
+                    <h1 className="website-header-title">Insta Share</h1>
+                  </div>
+                  <div className="details-container">
+                    <div className="search-container">
+                      <input
+                        type="search"
+                        placeholder="Search"
+                        className="search-input"
+                        onChange={onChangeInput}
+                        value={searchInput}
+                      />
+                      <button
+                        type="button"
+                        className="search-btn"
+                        onClick={onClickSearch}
+                      >
+                        <BsSearch className="search-icon" />
+                      </button>
+                    </div>
+                    <Link to="/">
+                      <button type="button" className="nav-home-heading">
+                        Home
+                      </button>
+                    </Link>
+                    <Link to="/my-profile">
+                      <button type="button" className="nav-profile-heading">
+                        Profile
+                      </button>
+                    </Link>
+                    <button
+                      type="button"
+                      className="logout-btn"
+                      onClick={this.onClickLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    className="menu-button"
+                    onClick={this.onClickMenu}
+                  >
+                    <IoIosMenu className="menu-icon" />
+                  </button>
+                </div>
+              </nav>
+
+              {showDetails && this.onRenderNavDetails()}
+              {showSearch && this.onShowSearchBar()}
+            </>
+          )
+        }}
+      </SearchContext.Consumer>
     )
   }
 }
