@@ -7,7 +7,6 @@ import Header from '../Header'
 import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
 import SearchResults from '../SearchResults'
-import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -19,7 +18,10 @@ const apiStatusConstraints = {
 }
 
 class Home extends Component {
-  state = {storiesList: [], apiStatus: apiStatusConstraints.initial}
+  state = {
+    storiesList: [],
+    apiStatus: apiStatusConstraints.initial,
+  }
 
   componentDidMount() {
     this.getUserStories()
@@ -52,6 +54,10 @@ class Home extends Component {
     } else {
       this.setState({apiStatus: apiStatusConstraints.failure})
     }
+  }
+
+  onClickTryAgain = () => {
+    this.getUserStories()
   }
 
   onRenderSuccessPageStories = () => {
@@ -88,7 +94,23 @@ class Home extends Component {
     </div>
   )
 
-  onRenderFailurePage = () => {}
+  onRenderFailurePage = () => (
+    <div className="something-container">
+      <img
+        src="https://res.cloudinary.com/ysdsp/image/upload/v1664183855/opps_b7yfve.png"
+        alt="something went wrong"
+        className="oops-error"
+      />
+      <h1 className="wrong-error">Something went wrong. Please try again</h1>
+      <button
+        type="button"
+        className="try-again-btn"
+        onClick={this.onClickTryAgain}
+      >
+        Try again
+      </button>
+    </div>
+  )
 
   onRenderStories = () => {
     const {apiStatus} = this.state
@@ -98,22 +120,38 @@ class Home extends Component {
         return this.onRenderInprogress()
       case apiStatusConstraints.success:
         return this.onRenderSuccessPageStories()
+      case apiStatusConstraints.failure:
+        return this.onRenderFailurePage()
       default:
         return null
     }
   }
 
-  render() {
-    return (
-      <div className="home-container">
-        <Header />
-        <div className="stories-posts-container">
-          {this.onRenderStories()}
-          <InstaAllPosts />
-          <SearchResults />
-        </div>
+  receiveData = data => {
+    console.log(data)
+  }
+
+  onRenderResults = () => (
+    <div className="home-container">
+      <Header receiveData={this.receiveData} />
+      <div className="stories-posts-container">
+        {this.onRenderStories()}
+        <InstaAllPosts />
       </div>
-    )
+    </div>
+  )
+
+  onRenderSearchResults = () => (
+    <div className="home-container">
+      <Header />
+      <div className="stories-posts-container">
+        <SearchResults />
+      </div>
+    </div>
+  )
+
+  render() {
+    return <> {this.onRenderResults()} </>
   }
 }
 

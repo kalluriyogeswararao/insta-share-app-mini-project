@@ -7,36 +7,24 @@ import Home from './components/Home'
 import MyProfile from './components/MyProfile'
 import UserProfile from './components/UserProfile'
 import SearchContext from './SearchContext/SearchContext'
+import NotFound from './components/NotFound'
 import './App.css'
 
 class App extends Component {
-  state = {searchInput: '', inputData: '', search: false}
+  state = {searchDataList: 'dfdf'}
 
-  changeSearchInput = value => {
-    this.setState({searchInput: value})
-  }
-
-  onClickSearchButton = () => {
-    const {searchInput} = this.state
-    this.setState({inputData: searchInput, search: true})
-  }
-
-  resetSearch = () => {
-    this.setState({search: false})
+  onClickSearchButton = data => {
+    this.setState({searchDataList: data})
   }
 
   render() {
-    const {searchInput, inputData, search} = this.state
+    const {searchDataList} = this.state
 
     return (
       <SearchContext.Provider
         value={{
-          searchInput,
-          inputData,
-          search,
-          changeSearchInput: this.changeSearchInput,
+          searchDataList,
           onClickSearchButton: this.onClickSearchButton,
-          resetSearch: this.resetSearch,
         }}
       >
         <Switch>
@@ -44,6 +32,7 @@ class App extends Component {
           <ProtectedRoute exact path="/" component={Home} />
           <ProtectedRoute exact path="/my-profile" component={MyProfile} />
           <ProtectedRoute exact path="/users/:id" component={UserProfile} />
+          <Route component={NotFound} />
         </Switch>
       </SearchContext.Provider>
     )

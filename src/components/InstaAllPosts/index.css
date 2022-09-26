@@ -13,3 +13,8 @@
   align-items: center;
   height: 20vh;
 }
+
+.error-icon {
+  font-size: 40px;
+  background: #4094ef;
+}

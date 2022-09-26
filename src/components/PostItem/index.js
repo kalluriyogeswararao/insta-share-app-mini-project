@@ -35,16 +35,20 @@ const PostItem = props => {
         <p className="user-username">{userUsername}</p>
       </Link>
 
-      <img src={imageUrl} alt="post author profile" className="post-image" />
+      <img src={imageUrl} alt="post" className="post-image" />
       <div className="post-details-container">
         <div className="icons-container">
-          <button type="button" className="like-btn" onClick={onClickLike}>
-            {isLike ? (
+          {isLike && (
+            <button type="button" className="like-btn" onClick={onClickLike}>
               <FcLike className="like-icon" />
-            ) : (
+            </button>
+          )}
+
+          {!isLike && (
+            <button type="button" className="like-btn" onClick={onClickLike}>
               <BsHeart className="like-icon" />
-            )}
-          </button>
+            </button>
+          )}
           <button type="button" className="like-btn">
             <FaRegComment className="like-icon" />
           </button>

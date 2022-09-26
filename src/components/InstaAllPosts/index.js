@@ -1,5 +1,6 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
+import {BiError} from 'react-icons/bi'
 import Loader from 'react-loader-spinner'
 import PostItem from '../PostItem'
 
@@ -105,6 +106,10 @@ class InstaAllPosts extends Component {
     }
   }
 
+  onClickTryAgain = () => {
+    this.getUserStories()
+  }
+
   onRenderSuccessPageStories = () => {
     const {postsList} = this.state
 
@@ -127,7 +132,19 @@ class InstaAllPosts extends Component {
     </div>
   )
 
-  onRenderFailurePage = () => {}
+  onRenderFailurePage = () => (
+    <div className="something-container">
+      <BiError className="error-icon" />
+      <h1 className="wrong-error">Something went wrong. Please try again</h1>
+      <button
+        type="button"
+        className="try-again-btn"
+        onClick={this.onClickTryAgain}
+      >
+        Try again
+      </button>
+    </div>
+  )
 
   onRenderAllPosts = () => {
     const {apiStatus} = this.state
@@ -137,6 +154,8 @@ class InstaAllPosts extends Component {
         return this.onRenderInprogress()
       case apiStatusConstraints.success:
         return this.onRenderSuccessPageStories()
+      case apiStatusConstraints.failure:
+        return this.onRenderFailurePage()
       default:
         return null
     }

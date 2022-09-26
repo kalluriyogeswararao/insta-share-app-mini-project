@@ -67,7 +67,7 @@ class MyProfile extends Component {
     <ul className="all-posts-list">
       {posts.map(post => (
         <li className="post-item" key={post.id}>
-          <img src={post.image} alt="my post" className="post" />
+          <img src={post.image} alt="user post" className="post" />
         </li>
       ))}
     </ul>
@@ -108,7 +108,7 @@ class MyProfile extends Component {
         <div className="user-profile-container">
           <img
             src={profilePic}
-            alt="my profile"
+            alt="user profile"
             className="user-my-profile-image"
           />
           <div className="user-profile-details-container">
@@ -131,7 +131,7 @@ class MyProfile extends Component {
         <ul className="user-my-profile-stories">
           {stories.map(item => (
             <li key={item.id} className="user-story">
-              <img src={item.image} alt="my story" className="user-image" />
+              <img src={item.image} alt="user story" className="user-image" />
             </li>
           ))}
         </ul>
