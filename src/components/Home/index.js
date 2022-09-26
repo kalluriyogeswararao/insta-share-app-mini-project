@@ -6,6 +6,8 @@ import Loader from 'react-loader-spinner'
 import Header from '../Header'
 import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
+import SearchResults from '../SearchResults'
+import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -108,6 +110,7 @@ class Home extends Component {
         <div className="stories-posts-container">
           {this.onRenderStories()}
           <InstaAllPosts />
+          <SearchResults />
         </div>
       </div>
     )

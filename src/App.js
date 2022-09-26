@@ -10,7 +10,7 @@ import SearchContext from './SearchContext/SearchContext'
 import './App.css'
 
 class App extends Component {
-  state = {searchInput: '', inputData: ''}
+  state = {searchInput: '', inputData: '', search: false}
 
   changeSearchInput = value => {
     this.setState({searchInput: value})
@@ -18,19 +18,25 @@ class App extends Component {
 
   onClickSearchButton = () => {
     const {searchInput} = this.state
-    this.setState({inputData: searchInput})
+    this.setState({inputData: searchInput, search: true})
+  }
+
+  resetSearch = () => {
+    this.setState({search: false})
   }
 
   render() {
-    const {searchInput, inputData} = this.state
-    console.log(inputData)
+    const {searchInput, inputData, search} = this.state
+
     return (
       <SearchContext.Provider
         value={{
           searchInput,
           inputData,
+          search,
           changeSearchInput: this.changeSearchInput,
           onClickSearchButton: this.onClickSearchButton,
+          resetSearch: this.resetSearch,
         }}
       >
         <Switch>

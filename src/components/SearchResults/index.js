@@ -1,43 +1,27 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import Loader from 'react-loader-spinner'
+import SearchContext from '../../SearchContext/SearchContext'
 import PostItem from '../PostItem'
 
 import './index.css'
 
-const apiStatusConstraints = {
-  initial: 'INITIAL',
-  success: 'SUCCESS',
-  failure: 'FAILURE',
-  inprogress: 'IN_PROGRESS',
-}
+class SearchResults extends Component {
+  state = {searchList: []}
 
-class InstaAllPosts extends Component {
-  state = {
-    postsList: [],
-    apiStatus: apiStatusConstraints.initial,
-  }
-
-  componentDidMount() {
-    this.getUserStories()
-  }
-
-  getUserStories = async () => {
-    this.setState({apiStatus: apiStatusConstraints.inprogress})
-    const url = `https://apis.ccbp.in/insta-share/posts`
+  onRenderSearchResults = async inputData => {
     const jwtToken = Cookies.get('jwt_token')
+    const url = `https://apis.ccbp.in/insta-share/posts?search=${inputData}`
     const options = {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${jwtToken}`,
       },
     }
-
     const response = await fetch(url, options)
+    const data = await response.json()
+    console.log(data)
 
-    if (response.ok === true) {
-      const data = await response.json()
-
+    if (response.ok) {
       const updatedData = data.posts.map(eachPost => ({
         createdAt: eachPost.created_at,
         isLike: false,
@@ -56,13 +40,7 @@ class InstaAllPosts extends Component {
           imageUrl: eachPost.post_details.image_url,
         },
       }))
-
-      this.setState({
-        postsList: updatedData,
-        apiStatus: apiStatusConstraints.success,
-      })
-    } else {
-      this.setState({apiStatus: apiStatusConstraints.failure})
+      this.setState({searchList: updatedData})
     }
   }
 
@@ -86,7 +64,7 @@ class InstaAllPosts extends Component {
 
     if (status.message === 'Post has been liked') {
       this.setState(prevState => ({
-        postsList: prevState.postsList.map(each => {
+        searchList: prevState.searchList.map(each => {
           if (postId === each.postId) {
             return {...each, isLike: true, likesCount: each.likesCount + 1}
           }
@@ -95,7 +73,7 @@ class InstaAllPosts extends Component {
       }))
     } else {
       this.setState(prevState => ({
-        postsList: prevState.postsList.map(each => {
+        searchList: prevState.searchList.map(each => {
           if (postId === each.postId) {
             return {...each, isLike: false, likesCount: each.likesCount - 1}
           }
@@ -105,12 +83,11 @@ class InstaAllPosts extends Component {
     }
   }
 
-  onRenderSuccessPageStories = () => {
-    const {postsList} = this.state
-
+  onRenderPosts = () => {
+    const {searchList} = this.state
     return (
       <ul className="all-posts">
-        {postsList.map(eachPost => (
+        {searchList.map(eachPost => (
           <PostItem
             postDetailsData={eachPost}
             key={eachPost.postId}
@@ -121,30 +98,24 @@ class InstaAllPosts extends Component {
     )
   }
 
-  onRenderInprogress = () => (
-    <div className="loader-container">
-      <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
-    </div>
-  )
-
-  onRenderFailurePage = () => {}
-
-  onRenderAllPosts = () => {
-    const {apiStatus} = this.state
-
-    switch (apiStatus) {
-      case apiStatusConstraints.inprogress:
-        return this.onRenderInprogress()
-      case apiStatusConstraints.success:
-        return this.onRenderSuccessPageStories()
-      default:
-        return null
-    }
-  }
-
   render() {
-    return <div className="posts-container">{this.onRenderAllPosts()}</div>
+    return (
+      <>
+        <SearchContext.Consumer>
+          {value => {
+            const {search, inputData, resetSearch} = value
+
+            if (search === true) {
+              this.onRenderSearchResults(inputData)
+              resetSearch()
+            }
+          }}
+        </SearchContext.Consumer>
+
+        {this.onRenderPosts()}
+      </>
+    )
   }
 }
 
-export default InstaAllPosts
+export default SearchResults
