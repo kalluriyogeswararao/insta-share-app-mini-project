@@ -1,9 +1,8 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
-import SearchContext from '../../SearchContext/SearchContext'
-import PostItem from '../PostItem'
 
+import PostItem from '../PostItem'
 import './index.css'
 
 const apiStatusConstraints = {
@@ -17,23 +16,11 @@ class SearchResults extends Component {
   state = {
     searchList: [],
     apiStatus: apiStatusConstraints.initial,
-    search: '',
   }
 
   componentDidMount() {
     this.onSearchPosts()
-    this.onGetSearchInput()
   }
-
-  onGetSearchInput = () => (
-    <SearchContext.Consumer>
-      {value => {
-        const {searchInput} = value
-        this.setState({search: searchInput})
-        console.log(searchInput)
-      }}
-    </SearchContext.Consumer>
-  )
 
   onSearchPosts = async () => {
     this.setState({apiStatus: apiStatusConstraints.inprogress})
@@ -152,7 +139,7 @@ class SearchResults extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="search-loader-container">
+    <div className="search-loader-container" testid="loader">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )

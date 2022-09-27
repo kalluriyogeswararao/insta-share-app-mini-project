@@ -1,6 +1,5 @@
 import {Component} from 'react'
 import Cookies from 'js-cookie'
-import {BiError} from 'react-icons/bi'
 import Loader from 'react-loader-spinner'
 import PostItem from '../PostItem'
 
@@ -94,7 +93,8 @@ class InstaAllPosts extends Component {
           return {...each}
         }),
       }))
-    } else {
+    }
+    if (status.message === 'Post has been unlike') {
       this.setState(prevState => ({
         postsList: prevState.postsList.map(each => {
           if (postId === each.postId) {
@@ -127,14 +127,19 @@ class InstaAllPosts extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="loader-container">
+    <div className="loader-container" testid="loader">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
 
   onRenderFailurePage = () => (
     <div className="something-container">
-      <BiError className="error-icon" />
+      <img
+        src="https://www.nicepng.com/png/detail/135-1358116_error-png.png"
+        alt="failure view"
+        className="error-icon"
+      />
+
       <h1 className="wrong-error">Something went wrong. Please try again</h1>
       <button
         type="button"

@@ -2,7 +2,7 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import {BsGrid3X3} from 'react-icons/bs'
-import {AiFillCamera} from 'react-icons/ai'
+import {BiCamera} from 'react-icons/bi'
 import Header from '../Header'
 
 import './index.css'
@@ -71,10 +71,14 @@ class MyProfile extends Component {
 
   onRenderEmpty = () => (
     <div>
-      <AiFillCamera className="camera-icon" />
-      <p className="no-posts">No Posts Yet</p>
+      <BiCamera className="camera-icon" />
+      <h1 className="no-posts">No Posts"</h1>
     </div>
   )
+
+  onClickTryAgain = () => {
+    this.getUserStories()
+  }
 
   onRenderAllPosts = () => {
     const {myProfileDetails} = this.state
@@ -104,7 +108,7 @@ class MyProfile extends Component {
         <div className="profile-container">
           <img src={profilePic} alt="my profile" className="my-profile-image" />
           <div className="profile-details-container">
-            <p className="profile-username">{username}</p>
+            <h1 className="profile-username">{username}</h1>
             <div className="posts-followers-container">
               <p className="posts">
                 {postsCount} <span className="span">posts</span>
@@ -130,7 +134,7 @@ class MyProfile extends Component {
         <hr className="hr-line" />
         <div className="grid-icon-container">
           <BsGrid3X3 className="grid-icon" />
-          <p className="post-heading">Posts</p>
+          <h1 className="post-heading">Posts</h1>
         </div>
 
         {this.onRenderAllPosts()}
@@ -139,12 +143,28 @@ class MyProfile extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="my-profile-loader-container">
+    <div className="my-profile-loader-container" testid="loader">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
 
-  onRenderFailurePage = () => {}
+  onRenderFailurePage = () => (
+    <div className="something-container">
+      <img
+        src="https://res.cloudinary.com/ysdsp/image/upload/v1664183855/opps_b7yfve.png"
+        alt="failure view"
+        className="oops-error"
+      />
+      <p className="wrong-error">Something went wrong. Please try again</p>
+      <button
+        type="button"
+        className="try-again-btn"
+        onClick={this.onClickTryAgain}
+      >
+        Try again
+      </button>
+    </div>
+  )
 
   onRenderStories = () => {
     const {apiStatus} = this.state
@@ -154,6 +174,8 @@ class MyProfile extends Component {
         return this.onRenderInprogress()
       case apiStatusConstraints.success:
         return this.onRenderSuccessPageStories()
+      case apiStatusConstraints.failure:
+        return this.onRenderFailurePage()
       default:
         return null
     }

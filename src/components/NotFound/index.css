@@ -47,3 +47,20 @@
   border: none;
   flex: none;
 }
+
+@media screen and (max-width: 576px) {
+  .not-found-image {
+    width: 157px;
+    height: 173px;
+  }
+  .not-found-heading {
+    font-size: 25px;
+    font-weight: 550;
+    margin-bottom: 10px;
+  }
+  .error-para {
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+  }
+}

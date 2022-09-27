@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom'
 import {BsHeart} from 'react-icons/bs'
-import {ImShare2} from 'react-icons/im'
+import {BiShareAlt} from 'react-icons/bi'
 import {FaRegComment} from 'react-icons/fa'
 import {FcLike} from 'react-icons/fc'
 import './index.css'
@@ -24,6 +24,10 @@ const PostItem = props => {
     onClickLikeIcon({postId, isLike})
   }
 
+  const onClickUnlike = () => {
+    onClickLikeIcon({postId, isLike})
+  }
+
   return (
     <li className="post-details">
       <Link to={`/users/${userUserId}`} className="user-details-container">
@@ -39,13 +43,23 @@ const PostItem = props => {
       <div className="post-details-container">
         <div className="icons-container">
           {isLike && (
-            <button type="button" className="like-btn" onClick={onClickLike}>
+            <button
+              type="button"
+              className="like-btn"
+              onClick={onClickLike}
+              testid="unLikeIcon"
+            >
               <FcLike className="like-icon" />
             </button>
           )}
 
           {!isLike && (
-            <button type="button" className="like-btn" onClick={onClickLike}>
+            <button
+              type="button"
+              className="like-btn"
+              onClick={onClickUnlike}
+              testid="likeIcon"
+            >
               <BsHeart className="like-icon" />
             </button>
           )}
@@ -53,16 +67,21 @@ const PostItem = props => {
             <FaRegComment className="like-icon" />
           </button>
           <button type="button" className="like-btn">
-            <ImShare2 className="like-icon" />
+            <BiShareAlt className="like-icon" />
           </button>
         </div>
         <p className="like">{likesCount} likes</p>
         <p className="caption">{caption}</p>
-        {comments.map(each => (
-          <p className="comment" key={each.comment}>
-            {each.username} <span className="caption">{each.comment}</span>
-          </p>
-        ))}
+        <ul>
+          {comments.map(each => (
+            <li key={each.userId}>
+              <p className="comment" key={each.comment}>
+                {each.username}
+              </p>
+              <p className="caption">{each.comment}</p>
+            </li>
+          ))}
+        </ul>
         <p className="date">{createdAt}</p>
       </div>
     </li>

@@ -7,7 +7,6 @@ import Header from '../Header'
 import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
 import SearchResults from '../SearchResults'
-import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -80,17 +79,19 @@ class Home extends Component {
 
     return (
       <div className="all-stories">
-        <Slider {...settings}>
-          {storiesList.map(eachStory => (
-            <StoryItem storyDetails={eachStory} key={eachStory.userId} />
-          ))}
-        </Slider>
+        <ul>
+          <Slider {...settings}>
+            {storiesList.map(eachStory => (
+              <StoryItem storyDetails={eachStory} key={eachStory.userId} />
+            ))}
+          </Slider>
+        </ul>
       </div>
     )
   }
 
   onRenderInprogress = () => (
-    <div className="loader-container">
+    <div className="loader-container" testid="loader">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
@@ -99,10 +100,10 @@ class Home extends Component {
     <div className="something-container">
       <img
         src="https://res.cloudinary.com/ysdsp/image/upload/v1664183855/opps_b7yfve.png"
-        alt="something went wrong"
+        alt="failure view"
         className="oops-error"
       />
-      <h1 className="wrong-error">Something went wrong. Please try again</h1>
+      <p className="wrong-error">Something went wrong. Please try again</p>
       <button
         type="button"
         className="try-again-btn"
@@ -148,17 +149,7 @@ class Home extends Component {
   )
 
   render() {
-    return (
-      <SearchContext.Consumer>
-        {value => {
-          const {searchInput} = value
-          if (searchInput !== '') {
-            return this.onRenderSearchResults()
-          }
-          return this.onRenderResults()
-        }}
-      </SearchContext.Consumer>
-    )
+    return <>{this.onRenderResults()}</>
   }
 }
 

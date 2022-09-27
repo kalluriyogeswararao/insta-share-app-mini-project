@@ -2,7 +2,7 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
 import {BsGrid3X3} from 'react-icons/bs'
-import {AiFillCamera} from 'react-icons/ai'
+import {BiCamera} from 'react-icons/bi'
 import Header from '../Header'
 
 import './index.css'
@@ -63,6 +63,10 @@ class MyProfile extends Component {
     }
   }
 
+  onClickTryAgain = () => {
+    this.getUserStories()
+  }
+
   onRenderPosts = posts => (
     <ul className="all-posts-list">
       {posts.map(post => (
@@ -75,8 +79,8 @@ class MyProfile extends Component {
 
   onRenderEmpty = () => (
     <div>
-      <AiFillCamera className="camera-icon" />
-      <p className="no-posts">No Posts Yet</p>
+      <BiCamera className="camera-icon" />
+      <h1 className="no-posts">No Posts"</h1>
     </div>
   )
 
@@ -112,7 +116,7 @@ class MyProfile extends Component {
             className="user-my-profile-image"
           />
           <div className="user-profile-details-container">
-            <p className="user-profile-username">{username}</p>
+            <h1 className="user-profile-username">{username}</h1>
             <div className="user-posts-followers-container">
               <p className="user-posts">
                 {postsCount} <span className="user-span">posts</span>
@@ -138,7 +142,7 @@ class MyProfile extends Component {
         <hr className="user-hr-line" />
         <div className="user-grid-icon-container">
           <BsGrid3X3 className="user-grid-icon" />
-          <p className="user-post-heading">Posts</p>
+          <h1 className="user-post-heading">Posts</h1>
         </div>
 
         {this.onRenderAllPosts()}
@@ -147,12 +151,28 @@ class MyProfile extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="user-my-profile-loader-container">
+    <div className="user-my-profile-loader-container" testid="loader">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
 
-  onRenderFailurePage = () => {}
+  onRenderFailurePage = () => (
+    <div className="something-container">
+      <img
+        src="https://res.cloudinary.com/ysdsp/image/upload/v1664183855/opps_b7yfve.png"
+        alt="failure view"
+        className="oops-error"
+      />
+      <p className="wrong-error">Something went wrong. Please try again</p>
+      <button
+        type="button"
+        className="try-again-btn"
+        onClick={this.onClickTryAgain}
+      >
+        Try again
+      </button>
+    </div>
+  )
 
   onRenderStories = () => {
     const {apiStatus} = this.state
@@ -162,6 +182,8 @@ class MyProfile extends Component {
         return this.onRenderInprogress()
       case apiStatusConstraints.success:
         return this.onRenderSuccessPageStories()
+      case apiStatusConstraints.failure:
+        return this.onRenderFailurePage()
       default:
         return null
     }
