@@ -4,6 +4,7 @@ import Cookies from 'js-cookie'
 import {BsSearch} from 'react-icons/bs'
 import {IoIosMenu} from 'react-icons/io'
 import {ImCross} from 'react-icons/im'
+import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -11,49 +12,6 @@ class Header extends Component {
   state = {
     showDetails: false,
     showSearch: false,
-    searchInput: '',
-  }
-
-  updateListData = data => {
-    const {receiveData} = this.props
-    receiveData(data)
-  }
-
-  onClickSearch = async () => {
-    const {searchInput} = this.state
-    const jwtToken = Cookies.get('jwt_token')
-    const url = `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
-    const options = {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${jwtToken}`,
-      },
-    }
-    const response = await fetch(url, options)
-    const data = await response.json()
-
-    if (response.ok) {
-      const updatedData = data.posts.map(eachPost => ({
-        createdAt: eachPost.created_at,
-        isLike: false,
-        comments: eachPost.comments.map(eachComment => ({
-          comment: eachComment.comment,
-          userId: eachComment.user_id,
-          username: eachComment.user_name,
-        })),
-        postId: eachPost.post_id,
-        likesCount: eachPost.likes_count,
-        profilePic: eachPost.profile_pic,
-        userUserId: eachPost.user_id,
-        userUsername: eachPost.user_name,
-        postDetails: {
-          caption: eachPost.post_details.caption,
-          imageUrl: eachPost.post_details.image_url,
-        },
-      }))
-
-      this.updateListData(updatedData)
-    }
   }
 
   onClickLogout = () => {
@@ -72,10 +30,6 @@ class Header extends Component {
 
   onShowSearch = () => {
     this.setState({showSearch: true, showDetails: false})
-  }
-
-  onChangeInput = event => {
-    this.setState({searchInput: event.target.value})
   }
 
   onRenderNavDetails = () => (
@@ -110,92 +64,120 @@ class Header extends Component {
     </div>
   )
 
-  onShowSearchBar = () => {
-    const {searchInput} = this.state
-    return (
-      <div className="popup-search-container">
-        <input
-          type="search"
-          placeholder="Search"
-          className="search-input"
-          onChange={this.onChangeInput}
-          value={searchInput}
-        />
-        <button
-          type="button"
-          className="search-btn"
-          onClick={this.onClickSearch}
-        >
-          <BsSearch className="search-icon" />
-        </button>
-      </div>
-    )
-  }
+  onShowSearchBar = () => (
+    <SearchContext.Consumer>
+      {value => {
+        const {enterInput, onClickSearchButton, onChangeSearchInput} = value
 
-  render() {
-    const {showDetails, showSearch, searchInput} = this.state
-    return (
-      <>
-        <nav className="navbar-container">
-          <div className="header-container">
-            <div className="logo-container">
-              <Link to="/">
-                <img
-                  src="https://res.cloudinary.com/ysdsp/image/upload/v1663996344/logo_wlcmi9.png"
-                  alt="website logo"
-                  className="website-header-logo"
-                />
-              </Link>
-              <h1 className="website-header-title">Insta Share</h1>
-            </div>
-            <div className="details-container">
-              <div className="search-container">
-                <input
-                  type="search"
-                  placeholder="Search"
-                  className="search-input"
-                  onChange={this.onChangeInput}
-                  value={searchInput}
-                />
-                <button
-                  type="button"
-                  className="search-btn"
-                  onClick={this.onClickSearch}
-                >
-                  <BsSearch className="search-icon" />
-                </button>
-              </div>
-              <Link to="/">
-                <button type="button" className="nav-home-heading">
-                  Home
-                </button>
-              </Link>
-              <Link to="/my-profile">
-                <button type="button" className="nav-profile-heading">
-                  Profile
-                </button>
-              </Link>
-              <button
-                type="button"
-                className="logout-btn"
-                onClick={this.onClickLogout}
-              >
-                Logout
-              </button>
-            </div>
+        const onChangeInput = event => {
+          onChangeSearchInput(event.target.value)
+        }
+
+        const onClickSearch = () => {
+          onClickSearchButton()
+        }
+
+        return (
+          <div className="popup-search-container">
+            <input
+              type="search"
+              placeholder="Search"
+              className="search-input"
+              onChange={onChangeInput}
+              value={enterInput}
+            />
             <button
               type="button"
-              className="menu-button"
-              onClick={this.onClickMenu}
+              className="search-btn"
+              onClick={onClickSearch}
             >
-              <IoIosMenu className="menu-icon" />
+              <BsSearch className="search-icon" />
             </button>
           </div>
-        </nav>
+        )
+      }}
+    </SearchContext.Consumer>
+  )
 
-        {showDetails && this.onRenderNavDetails()}
-        {showSearch && this.onShowSearchBar()}
-      </>
+  render() {
+    const {showDetails, showSearch} = this.state
+    return (
+      <SearchContext.Consumer>
+        {value => {
+          const {enterInput, onClickSearchButton, onChangeSearchInput} = value
+
+          const onChangeInput = event => {
+            onChangeSearchInput(event.target.value)
+          }
+
+          const onClickSearch = () => {
+            onClickSearchButton()
+          }
+
+          return (
+            <>
+              <nav className="navbar-container">
+                <div className="header-container">
+                  <div className="logo-container">
+                    <Link to="/">
+                      <img
+                        src="https://res.cloudinary.com/ysdsp/image/upload/v1663996344/logo_wlcmi9.png"
+                        alt="website logo"
+                        className="website-header-logo"
+                      />
+                    </Link>
+                    <h1 className="website-header-title">Insta Share</h1>
+                  </div>
+                  <div className="details-container">
+                    <div className="search-container">
+                      <input
+                        type="search"
+                        placeholder="Search"
+                        className="search-input"
+                        onChange={onChangeInput}
+                        value={enterInput}
+                      />
+                      <button
+                        type="button"
+                        className="search-btn"
+                        onClick={onClickSearch}
+                      >
+                        <BsSearch className="search-icon" />
+                      </button>
+                    </div>
+                    <Link to="/">
+                      <button type="button" className="nav-home-heading">
+                        Home
+                      </button>
+                    </Link>
+                    <Link to="/my-profile">
+                      <button type="button" className="nav-profile-heading">
+                        Profile
+                      </button>
+                    </Link>
+                    <button
+                      type="button"
+                      className="logout-btn"
+                      onClick={this.onClickLogout}
+                    >
+                      Logout
+                    </button>
+                  </div>
+                  <button
+                    type="button"
+                    className="menu-button"
+                    onClick={this.onClickMenu}
+                  >
+                    <IoIosMenu className="menu-icon" />
+                  </button>
+                </div>
+              </nav>
+              {showDetails && this.onRenderNavDetails()}
+              {showSearch && this.onShowSearchBar()}
+            </>
+          )
+        }}
+      </SearchContext.Consumer>
     )
   }
 }

@@ -54,3 +54,10 @@
   box-shadow: 0px 4px 16px rgba(123, 135, 148, 0.16);
   border-radius: 16px;
 }
+
+.search-loader-container {
+  height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

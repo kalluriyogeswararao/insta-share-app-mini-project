@@ -1,8 +1,10 @@
 import React from 'react'
 
 const searchContext = React.createContext({
-  searchDataList: '',
   onClickSearchButton: () => {},
+  enterInput: '',
+  searchInput: '',
+  onChangeSearchInput: () => {},
 })
 
 export default searchContext

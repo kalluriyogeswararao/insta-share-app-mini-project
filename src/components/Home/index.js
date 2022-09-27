@@ -7,6 +7,7 @@ import Header from '../Header'
 import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
 import SearchResults from '../SearchResults'
+import SearchContext from '../../SearchContext/SearchContext'
 
 import './index.css'
 
@@ -127,13 +128,9 @@ class Home extends Component {
     }
   }
 
-  receiveData = data => {
-    console.log(data)
-  }
-
   onRenderResults = () => (
     <div className="home-container">
-      <Header receiveData={this.receiveData} />
+      <Header />
       <div className="stories-posts-container">
         {this.onRenderStories()}
         <InstaAllPosts />
@@ -151,7 +148,17 @@ class Home extends Component {
   )
 
   render() {
-    return <> {this.onRenderResults()} </>
+    return (
+      <SearchContext.Consumer>
+        {value => {
+          const {searchInput} = value
+          if (searchInput !== '') {
+            return this.onRenderSearchResults()
+          }
+          return this.onRenderResults()
+        }}
+      </SearchContext.Consumer>
+    )
   }
 }
 

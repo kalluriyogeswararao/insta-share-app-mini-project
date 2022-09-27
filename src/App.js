@@ -11,20 +11,27 @@ import NotFound from './components/NotFound'
 import './App.css'
 
 class App extends Component {
-  state = {searchDataList: 'dfdf'}
+  state = {enterInput: '', searchInput: ''}
 
-  onClickSearchButton = data => {
-    this.setState({searchDataList: data})
+  onClickSearchButton = () => {
+    const {enterInput} = this.state
+    this.setState({searchInput: enterInput})
+  }
+
+  onChangeSearchInput = value => {
+    this.setState({enterInput: value})
   }
 
   render() {
-    const {searchDataList} = this.state
+    const {enterInput, searchInput} = this.state
 
     return (
       <SearchContext.Provider
         value={{
-          searchDataList,
+          enterInput,
+          searchInput,
           onClickSearchButton: this.onClickSearchButton,
+          onChangeSearchInput: this.onChangeSearchInput,
         }}
       >
         <Switch>

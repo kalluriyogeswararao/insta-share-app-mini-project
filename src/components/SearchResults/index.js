@@ -14,6 +14,71 @@ const apiStatusConstraints = {
 }
 
 class SearchResults extends Component {
+  state = {
+    searchList: [],
+    apiStatus: apiStatusConstraints.initial,
+    search: '',
+  }
+
+  componentDidMount() {
+    this.onSearchPosts()
+    this.onGetSearchInput()
+  }
+
+  onGetSearchInput = () => (
+    <SearchContext.Consumer>
+      {value => {
+        const {searchInput} = value
+        this.setState({search: searchInput})
+        console.log(searchInput)
+      }}
+    </SearchContext.Consumer>
+  )
+
+  onSearchPosts = async () => {
+    this.setState({apiStatus: apiStatusConstraints.inprogress})
+    const searchInput = 'sky'
+
+    const jwtToken = Cookies.get('jwt_token')
+    const url = `https://apis.ccbp.in/insta-share/posts?search=${searchInput}`
+    const options = {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+      },
+    }
+    const response = await fetch(url, options)
+
+    if (response.ok) {
+      const data = await response.json()
+      const updatedData = data.posts.map(eachPost => ({
+        createdAt: eachPost.created_at,
+        isLike: false,
+        comments: eachPost.comments.map(eachComment => ({
+          comment: eachComment.comment,
+          userId: eachComment.user_id,
+          username: eachComment.user_name,
+        })),
+        postId: eachPost.post_id,
+        likesCount: eachPost.likes_count,
+        profilePic: eachPost.profile_pic,
+        userUserId: eachPost.user_id,
+        userUsername: eachPost.user_name,
+        postDetails: {
+          caption: eachPost.post_details.caption,
+          imageUrl: eachPost.post_details.image_url,
+        },
+      }))
+
+      this.setState({
+        searchList: updatedData,
+        apiStatus: apiStatusConstraints.success,
+      })
+    } else {
+      this.setState({apiStatus: apiStatusConstraints.failure})
+    }
+  }
+
   onClickLikeIcon = async data => {
     const {postId, isLike} = data
     const jwtToken = Cookies.get('jwt_token')
@@ -65,34 +130,29 @@ class SearchResults extends Component {
     </div>
   )
 
-  onRenderPosts = () => (
-    <SearchContext.Consumer>
-      {value => {
-        const {searchDataList} = value
-
-        if (searchDataList.length > 0) {
-          return (
-            <div className="search-item-container">
-              <h1 className="search-heading">Search Results</h1>
-              <ul className="all-search-Posts">
-                {searchDataList.map(eachPost => (
-                  <PostItem
-                    postDetailsData={eachPost}
-                    key={eachPost.postId}
-                    onClickLikeIcon={this.onClickLikeIcon}
-                  />
-                ))}
-              </ul>
-            </div>
-          )
-        }
-        return this.onRenderNoSearchResultsPage()
-      }}
-    </SearchContext.Consumer>
-  )
+  onRenderPosts = () => {
+    const {searchList} = this.state
+    if (searchList.length > 0) {
+      return (
+        <div className="search-item-container">
+          <h1 className="search-heading">Search Results</h1>
+          <ul className="all-search-Posts">
+            {searchList.map(eachPost => (
+              <PostItem
+                postDetailsData={eachPost}
+                key={eachPost.postId}
+                onClickLikeIcon={this.onClickLikeIcon}
+              />
+            ))}
+          </ul>
+        </div>
+      )
+    }
+    return this.onRenderNoSearchResultsPage()
+  }
 
   onRenderInprogress = () => (
-    <div className="loader-container">
+    <div className="search-loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
@@ -111,7 +171,7 @@ class SearchResults extends Component {
   }
 
   render() {
-    return <div>{this.onRenderAllPosts()}</div>
+    return <>{this.onRenderAllPosts()}</>
   }
 }
 
