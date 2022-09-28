@@ -43,23 +43,13 @@ const PostItem = props => {
       <div className="post-details-container">
         <div className="icons-container">
           {isLike && (
-            <button
-              type="button"
-              className="like-btn"
-              onClick={onClickLike}
-              testid="unLikeIcon"
-            >
+            <button type="button" className="like-btn" onClick={onClickLike}>
               <FcLike className="like-icon" />
             </button>
           )}
 
           {!isLike && (
-            <button
-              type="button"
-              className="like-btn"
-              onClick={onClickUnlike}
-              testid="likeIcon"
-            >
+            <button type="button" className="like-btn" onClick={onClickUnlike}>
               <BsHeart className="like-icon" />
             </button>
           )}
@@ -74,7 +64,7 @@ const PostItem = props => {
         <p className="caption">{caption}</p>
         <ul>
           {comments.map(each => (
-            <li key={each.userId}>
+            <li key={each.userId} className="comment-item-value">
               <p className="comment" key={each.comment}>
                 {each.username}
               </p>

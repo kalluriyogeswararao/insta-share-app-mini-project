@@ -94,7 +94,7 @@ class InstaAllPosts extends Component {
         }),
       }))
     }
-    if (status.message === 'Post has been unlike') {
+    if (status.message === 'Post has been disliked') {
       this.setState(prevState => ({
         postsList: prevState.postsList.map(each => {
           if (postId === each.postId) {
@@ -127,7 +127,7 @@ class InstaAllPosts extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="loader-container" testid="loader">
+    <div className="loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )

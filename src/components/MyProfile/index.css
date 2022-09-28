@@ -1,6 +1,7 @@
 .home-container {
   min-height: 100vh;
   width: 100vw;
+  background-color: #fafafa;
 }
 .posts-container {
   display: flex;

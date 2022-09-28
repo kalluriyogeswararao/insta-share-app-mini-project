@@ -72,7 +72,7 @@ class MyProfile extends Component {
   onRenderEmpty = () => (
     <div>
       <BiCamera className="camera-icon" />
-      <h1 className="no-posts">No Posts"</h1>
+      <h1 className="no-posts">No Posts</h1>
     </div>
   )
 
@@ -143,7 +143,7 @@ class MyProfile extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="my-profile-loader-container" testid="loader">
+    <div className="my-profile-loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )

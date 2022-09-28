@@ -15,6 +15,10 @@
   margin-bottom: 14px;
   margin-right: 16px;
 }
+.comment-item-value {
+  display: flex;
+  align-items: center;
+}
 
 .link {
   text-decoration: none;
@@ -101,6 +105,7 @@
   font-weight: 500;
   font-size: 14px;
   margin-bottom: 8px;
+  margin-right: 5px;
   line-height: 18px;
   color: #262626;
 }

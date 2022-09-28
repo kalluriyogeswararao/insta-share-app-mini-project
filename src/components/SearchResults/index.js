@@ -66,6 +66,10 @@ class SearchResults extends Component {
     }
   }
 
+  onClickTryAgain = () => {
+    this.onSearchPosts()
+  }
+
   onClickLikeIcon = async data => {
     const {postId, isLike} = data
     const jwtToken = Cookies.get('jwt_token')
@@ -93,7 +97,8 @@ class SearchResults extends Component {
           return {...each}
         }),
       }))
-    } else {
+    }
+    if (status.message === 'Post has been disliked') {
       this.setState(prevState => ({
         searchList: prevState.searchList.map(each => {
           if (postId === each.postId) {
@@ -139,8 +144,26 @@ class SearchResults extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="search-loader-container" testid="loader">
+    <div className="search-loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
+    </div>
+  )
+
+  onRenderFailurePage = () => (
+    <div className="something-container">
+      <img
+        src="https://res.cloudinary.com/ysdsp/image/upload/v1664183855/opps_b7yfve.png"
+        alt="failure view"
+        className="oops-error"
+      />
+      <p className="wrong-error">Something went wrong. Please try again</p>
+      <button
+        type="button"
+        className="try-again-btn"
+        onClick={this.onClickTryAgain}
+      >
+        Try again
+      </button>
     </div>
   )
 
@@ -152,6 +175,8 @@ class SearchResults extends Component {
         return this.onRenderInprogress()
       case apiStatusConstraints.success:
         return this.onRenderPosts()
+      case apiStatusConstraints.failure:
+        return this.onRenderFailurePage()
       default:
         return null
     }

@@ -6,6 +6,7 @@ import Loader from 'react-loader-spinner'
 import Header from '../Header'
 import InstaAllPosts from '../InstaAllPosts'
 import StoryItem from '../StoryItem'
+import SearchContext from '../../SearchContext/SearchContext'
 import SearchResults from '../SearchResults'
 
 import './index.css'
@@ -91,7 +92,7 @@ class Home extends Component {
   }
 
   onRenderInprogress = () => (
-    <div className="loader-container" testid="loader">
+    <div className="loader-container">
       <Loader type="TailSpin" color="#4094EF" height={30} width={30} />
     </div>
   )
@@ -135,6 +136,7 @@ class Home extends Component {
       <div className="stories-posts-container">
         {this.onRenderStories()}
         <InstaAllPosts />
+        <SearchResults />
       </div>
     </div>
   )
@@ -149,7 +151,17 @@ class Home extends Component {
   )
 
   render() {
-    return <>{this.onRenderResults()}</>
+    return (
+      <SearchContext.Consumer>
+        {value => {
+          const {searchInput} = value
+          if (searchInput !== '') {
+            return this.onRenderSearchResults()
+          }
+          return this.onRenderResults()
+        }}
+      </SearchContext.Consumer>
+    )
   }
 }
 
